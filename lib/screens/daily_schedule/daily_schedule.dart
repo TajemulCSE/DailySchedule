@@ -1,3 +1,4 @@
+import 'package:daily_schedule/screens/daily_schedule/event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -30,6 +31,20 @@ class _DailySchedule extends State<DailySchedule> {
     return List.generate(
       7,
       (index) => focusedDay.subtract(Duration(days: 3 - index)),
+    );
+  }
+
+  //dummy event list
+  final List<Event> todayEvents = [
+    Event(title: 'Site Setup', description: 'Prepare temporary site office'),
+    Event(title: 'Material Delivery', description: 'Bricks and cement arrival'),
+  ];
+
+  List<DateTime> getWeekDates() {
+    final today = DateTime.now();
+    return List.generate(
+      8,
+      (index) => today.subtract(Duration(days: 3 - index)),
     );
   }
 
@@ -161,7 +176,7 @@ class _DailySchedule extends State<DailySchedule> {
                     onPressed: () {
                       _previousMonth();
                     },
-                    icon: Icon(Icons.arrow_back_ios,size: 20,),
+                    icon: Icon(Icons.arrow_back_ios, size: 20),
                   ),
                   Spacer(),
                   Text(
@@ -177,7 +192,7 @@ class _DailySchedule extends State<DailySchedule> {
                     onPressed: () {
                       _nextMonth();
                     },
-                    icon: Icon(Icons.arrow_forward_ios,size: 20,),
+                    icon: Icon(Icons.arrow_forward_ios, size: 20),
                   ),
                 ],
               ),
@@ -226,34 +241,85 @@ class _DailySchedule extends State<DailySchedule> {
                     }).toList(),
               ),
             ),
+
+            SizedBox(height: 10),
+
+            //event list of day
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      width: 60,
+                    ), 
+                    ...getWeekDates().map((date) {
+                      final isToday = DateUtils.isSameDay(date, focusedDay);
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Column(
+                          children: [
+                            Text(
+                              DateFormat('dd').format(date),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color:
+                                    isToday ? Colors.black : Colors.grey[700],
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Container(
+                              width: 2,
+                              height: 100,
+                              color: isToday ? Colors.black : Colors.grey[400],
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                    const SizedBox(width: 60), // Padding after items
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
       bottomNavigationBar: ClipRRect(
+        
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
-          topRight: Radius.circular(30)
+          topRight: Radius.circular(30),
         ),
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: 2,
-          backgroundColor: Color(0xFFF5F9F8),
+        child: SizedBox(
+          height: 100,
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            currentIndex: 2,
+            backgroundColor: Color(0xFFF5F9F8),
           
-          items: [
-            BottomNavigationBarItem(icon: SvgPicture.asset('assets/icons/home.svg'), label: "Home"),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset('assets/icons/subproject.svg'),
-              label: "Subproject",
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset('assets/icons/scheduling.svg'),
-              label: "Schedule",
-            ),
-            BottomNavigationBarItem(
-              icon: SvgPicture.asset('assets/icons/queries.svg'),
-              label: "Queries",
-            ),
-          ],
+            items: [
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset('assets/icons/home.svg'),
+                label: "Home",
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset('assets/icons/subproject.svg'),
+                label: "Subproject",
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset('assets/icons/scheduling.svg'),
+                label: "Schedule",
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset('assets/icons/queries.svg'),
+                label: "Queries",
+              ),
+            ],
+          ),
         ),
       ),
     );
