@@ -13,6 +13,25 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: DailySchedule(),
       debugShowCheckedModeBanner: false,
+
+      theme: ThemeData(
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          selectedItemColor: Color(0xFF3B5D5E),
+          unselectedItemColor: Color(0xFFAEAFB0),
+          selectedLabelStyle: TextStyle(
+            fontFamily: 'Urbanist-VariableFont_wght',
+            fontWeight: FontWeight.w700
+          ),
+          unselectedLabelStyle: TextStyle(
+           
+            fontFamily: 'Urbanist-VariableFont_wght',
+            fontWeight: FontWeight.w500
+
+
+          )
+        
+        )
+      ),
     );
   }
 }

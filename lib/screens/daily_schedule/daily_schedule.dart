@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -25,8 +26,18 @@ class _DailySchedule extends State<DailySchedule> {
     });
   }
 
+  List<DateTime> getSevenDates(DateTime focusedDay) {
+    return List.generate(
+      7,
+      (index) => focusedDay.subtract(Duration(days: 3 - index)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final today = DateTime.now();
+    final weekDates = getSevenDates(focusedDay);
+
     return Scaffold(
       backgroundColor: Color(0xFFE2ECEB),
       body: SingleChildScrollView(
@@ -74,7 +85,7 @@ class _DailySchedule extends State<DailySchedule> {
                 ),
                 IconButton(
                   onPressed: () {},
-                  icon: Icon(Icons.arrow_drop_down_sharp),
+                  icon: SvgPicture.asset('assets/icons/dropdown_arrow.svg'),
                 ),
               ],
             ),
@@ -88,7 +99,7 @@ class _DailySchedule extends State<DailySchedule> {
                 ),
                 padding: EdgeInsets.all(10),
                 child: TableCalendar(
-                  focusedDay: DateTime.now(),
+                  focusedDay: focusedDay,
                   firstDay: DateTime.utc(2010),
                   lastDay: DateTime.utc(2030),
 
@@ -150,7 +161,7 @@ class _DailySchedule extends State<DailySchedule> {
                     onPressed: () {
                       _previousMonth();
                     },
-                    icon: Icon(Icons.arrow_back_ios),
+                    icon: Icon(Icons.arrow_back_ios,size: 20,),
                   ),
                   Spacer(),
                   Text(
@@ -166,10 +177,81 @@ class _DailySchedule extends State<DailySchedule> {
                     onPressed: () {
                       _nextMonth();
                     },
-                    icon: Icon(Icons.arrow_forward_ios),
+                    icon: Icon(Icons.arrow_forward_ios,size: 20,),
                   ),
                 ],
               ),
+            ),
+
+            SizedBox(
+              height: 60,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children:
+                    weekDates.map((date) {
+                      final isToday = isSameDay(date, today);
+                      final isSelected = isSameDay(date, focusedDay);
+
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            focusedDay = date;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                isSelected ? Colors.black : Colors.transparent,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Text(
+                            isToday
+                                ? 'Today, ${DateFormat('d MMM').format(date)}'
+                                : date.day.toString(),
+                            style: TextStyle(
+                              color:
+                                  isSelected
+                                      ? Colors.white
+                                      : Colors.grey.shade700,
+                              fontWeight: FontWeight.w500,
+                              fontSize: isToday ? 14 : 16,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30)
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: 2,
+          backgroundColor: Color(0xFFF5F9F8),
+          
+          items: [
+            BottomNavigationBarItem(icon: SvgPicture.asset('assets/icons/home.svg'), label: "Home"),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset('assets/icons/subproject.svg'),
+              label: "Subproject",
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset('assets/icons/scheduling.svg'),
+              label: "Schedule",
+            ),
+            BottomNavigationBarItem(
+              icon: SvgPicture.asset('assets/icons/queries.svg'),
+              label: "Queries",
             ),
           ],
         ),
