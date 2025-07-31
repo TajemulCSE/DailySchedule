@@ -49,6 +49,8 @@ This is a Flutter implementation of a **Daily Schedule screen**, part of a const
 - [`table_calendar`](https://pub.dev/packages/table_calendar): For calendar-related logic (optional)
 
 ## 📂 Folder Structure
+
+```plaintext
 lib/
 ├── main.dart
 ├── screens/
@@ -58,3 +60,5 @@ lib/
 assets/
 ├── fonts/
 └── icons/
+```
+
